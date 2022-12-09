@@ -4,6 +4,7 @@
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class second {
     public static void main(String[] args) {
@@ -29,26 +30,26 @@ public class second {
         staff.add("Потапенко");
         staff.add("Сидоров");
         System.out.println(staff);
-        Map<Integer,String> staffs = new HashMap<>();
+        Map<String,Integer> staffs = new HashMap<>();
         for (int i = 0; i < staff.size() ; i++) {
             int count = 1;
             for (int j = 0; j < staff.size() ; j++) {
                 if (staff.get(i).equals(staff.get(j))) count ++;
-                if (count > 1 || j == staff.size()-1) staffs.put(count -1 , staff.get(i));
+                if (count > 1 || j == staff.size()-1) staffs.put(staff.get(i),count -1);
 
             }
 
         }
-        TreeMap<Integer, String> sortedMap = new TreeMap<>(staffs);
-        Set set = staffs.entrySet();
-        Iterator i = set.iterator();
 
-        // Traverse map and print elements
-        while (i.hasNext()) {
-            Map.Entry me = (Map.Entry)i.next();
-            System.out.print(me.getKey() + ": ");
-            System.out.println(me.getValue());
-        }
-        System.out.println(sortedMap);
+        Map<String, Integer> sortedMap = staffs.entrySet().stream()
+                .sorted(Comparator.comparingInt(e -> -e.getValue()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (a, b) -> { throw new AssertionError(); },
+                        LinkedHashMap::new
+                ));
+
+        sortedMap.entrySet().forEach(System.out::println);
     }
-}
+    }
